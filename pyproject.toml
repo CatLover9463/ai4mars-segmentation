@@ -1,0 +1,24 @@
+[project]
+name = "ai4mars-segmentation"
+version = "0.1.0"
+description = "Local U-Net training for AI4Mars terrain segmentation"
+requires-python = ">=3.10"
+dependencies = [
+    "datasets",
+    "scikit-learn",
+    "pillow",
+    "matplotlib",
+    "numpy",
+    "torch>=2.11.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu130", marker = "sys_platform == 'win32' or sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true

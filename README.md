@@ -1,34 +1,36 @@
-
 # AI4Mars Terrain Segmentation
 
-A deep learning project exploring semantic segmentation
-of Mars rover imagery using the AI4Mars dataset.
+Train a compact U-Net to segment Mars rover imagery into Soil, Bedrock, Sand, and Big rock.
 
-## Project status
+## Local training (Windows, macOS, or Linux)
 
-- [x] Initial notebook and project setup
-- [ ] Dataset inspection and label mapping
-- [ ] Train/validation/test split
-- [ ] Majority-class baseline
-- [ ] CNN U-Net implementation
-- [ ] Augmentation experiment
-- [ ] Final evaluation and error analysis
+1. Install Python 3.10 or newer.
+2. In this project folder, sync dependencies with uv. This project pins PyTorch to its CUDA 13.0 wheel index on Windows/Linux so the NVIDIA GPU is available:
+
+   ```powershell
+   uv sync
+   ```
+
+   Then use `uv run` for commands so they use the synced environment. The CUDA PyTorch wheel includes its runtime; keep your NVIDIA driver current.
+3. Start training:
+
+   ```powershell
+   uv run python train.py --epochs 20 --batch-size 8 --workers 2
+   ```
+
+The script downloads/caches `hassanjbara/AI4MARS` through Hugging Face Datasets on first run. It uses CUDA when available, then Apple MPS, otherwise CPU. CPU training can be slow; use `--batch-size 2` or `--image-size 128` if memory is tight. On Windows, `--workers 0` is the reliable default.
+
+Checkpoints and `training_history.json` are written to `outputs/ai4mars/`. `latest.pth` is saved each epoch and `best.pth` tracks the best validation mIoU. Resume an interrupted run with:
+
+```powershell
+uv run python train.py --epochs 20 --batch-size 8 --workers 2 --resume
+```
+
+`--epochs` is the total target epoch count when resuming. Use `uv run python train.py --help` to see all options.
 
 ## Dataset
 
 AI4Mars: https://data.nasa.gov/
+Hugging Face dataset: `hassanjbara/AI4MARS`
 
-The dataset is not included in this repository.
-See the notebook for the current data-inspection workflow.
-
-## Environment
-
-- Python
-- PyTorch
-- Google Colab
-
-## Reproducibility
-
-Training configuration, random seeds, data splits,
-evaluation metrics, and experiment results will be
-documented as the project develops.
+The dataset is not stored in this repository. The notebook remains available for exploration; `train.py` is the standalone local training path and does not require Google Colab or Drive.
