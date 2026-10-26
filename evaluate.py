@@ -1,7 +1,8 @@
-"""Evaluate one or more frozen checkpoints on AI4Mars official test partitions.
+"""Evaluate frozen checkpoints once on AI4Mars' strict test_min3 labels.
 
-Run only after model/configuration selection is complete. Each requested model is
-measured once on the concatenated test_min1/test_min2/test_min3 set.
+Run only after model/configuration selection is complete. The test_min1/min2/min3
+splits are alternative annotation-agreement versions of the same test images,
+not independent partitions; this script evaluates only test_min3 by default.
 """
 import argparse
 import json
@@ -10,7 +11,7 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.nn as nn
-from datasets import Image as HFImage, concatenate_datasets, load_dataset
+from datasets import Image as HFImage, load_dataset
 from torch.utils.data import DataLoader
 
 from train import (
@@ -48,7 +49,7 @@ def labeled_test_indices(data):
         except Exception:
             excluded["bad_image"].append(idx)
     if not usable:
-        raise RuntimeError("The selected official test partitions contain no usable labeled samples")
+        raise RuntimeError("The selected official test split contains no usable labeled samples")
     return usable, excluded
 
 
@@ -56,7 +57,6 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--checkpoints", nargs="+", type=Path, required=True)
     p.add_argument("--dataset-id", default="hassanjbara/AI4MARS")
-    p.add_argument("--splits", nargs="+", default=["test_min1", "test_min2", "test_min3"])
     p.add_argument("--output", type=Path, default=Path("results/final_test_metrics.json"))
     p.add_argument("--batch-size", type=int, default=16)
     p.add_argument("--workers", type=int, default=0)
@@ -74,8 +74,8 @@ def main():
     if device.type == "cuda":
         torch.backends.cudnn.benchmark = True
 
-    test_sets = [load_dataset(args.dataset_id, split=name) for name in args.splits]
-    test_data = concatenate_datasets(test_sets)
+    test_split = "test_min3"
+    test_data = load_dataset(args.dataset_id, split=test_split)
     usable, excluded = labeled_test_indices(test_data)
     results = {}
     criterion = nn.CrossEntropyLoss(ignore_index=IGNORE_INDEX)
@@ -110,7 +110,7 @@ def main():
 
     report = {
         "dataset_id": args.dataset_id,
-        "test_splits": args.splits,
+        "test_split": test_split,
         "test_partition_record_count": len(test_data),
         "usable_test_record_count": len(usable),
         "excluded_test_record_counts": {k: len(v) for k, v in excluded.items()},

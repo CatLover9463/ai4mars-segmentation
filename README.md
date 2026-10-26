@@ -17,11 +17,19 @@ Keep the NVIDIA driver current. The project also runs on CPU, though training wi
 
 The public dataset is `hassanjbara/AI4MARS`. Hugging Face downloads and caches it on first use. The four source mask IDs map to Soil (0), Bedrock (1), Sand (2), and Big rock (3); void and unknown values map to ignore index 255. The dataset schema has no scene/group identifier, so the train/validation split is record-level and fixed by seed. The exact indices and dataset fingerprint are saved in `outputs/splits/ai4mars_seed0.json` and copied into each run folder.
 
-Training uses the dataset's `train` partition for an 80/20 train/validation split. Official `test_min1`, `test_min2`, and `test_min3` partitions are reserved for the final one-shot evaluation; do not inspect their metrics while tuning.
+Training uses the dataset's `train` partition for an 80/20 train/validation split. The official `test_min1`, `test_min2`, and `test_min3` variants contain the same test images with different levels of annotation agreement, so the final one-shot evaluation uses only `test_min3` (the strictest agreement version). Do not inspect any test metrics while tuning. See the [dataset card](https://huggingface.co/datasets/hassanjbara/AI4MARS) for the variant definitions.
 
 ## Matched experiment
 
 Both runs use the same seed, split, 192×192 image size, U-Net width, optimizer, batch size, worker count, and 20-epoch cap. The lower resolution was chosen to reduce local training time while preserving the full model width; report it as an experimental choice.
+
+Compute the majority-class baseline first. This also creates the shared split manifest used by both model runs:
+
+```powershell
+uv run python baseline.py --image-size 192 --seed 0
+```
+
+The baseline summary is saved to `results/majority_baseline_192.json`.
 
 Control, without augmentation:
 

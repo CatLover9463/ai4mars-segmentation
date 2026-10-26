@@ -1,0 +1,72 @@
+{
+  "dataset_id": "hassanjbara/AI4MARS",
+  "seed": 0,
+  "image_size": [
+    192,
+    192
+  ],
+  "split_file": "outputs\\splits\\ai4mars_seed0.json",
+  "split_method": "fixed random record-level 80/20 train/validation split",
+  "class_names": [
+    "Soil",
+    "Bedrock",
+    "Sand",
+    "Big rock"
+  ],
+  "label_id_mapping": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3
+  },
+  "ignore_index": 255,
+  "majority_class_id": 1,
+  "majority_class": "Bedrock",
+  "training_class_pixel_counts": [
+    97373901,
+    131047428,
+    31685933,
+    2430590
+  ],
+  "validation_class_pixel_counts": [
+    25126071,
+    32770715,
+    7898923,
+    601049
+  ],
+  "pixel_accuracy": 0.4935589626228437,
+  "miou": 0.12338974065571093,
+  "per_class_iou": [
+    0.0,
+    0.4935589626228437,
+    0.0,
+    0.0
+  ],
+  "valid_pixels": 66396758,
+  "confusion_matrix": [
+    [
+      0,
+      25126071,
+      0,
+      0
+    ],
+    [
+      0,
+      32770715,
+      0,
+      0
+    ],
+    [
+      0,
+      7898923,
+      0,
+      0
+    ],
+    [
+      0,
+      601049,
+      0,
+      0
+    ]
+  ]
+}

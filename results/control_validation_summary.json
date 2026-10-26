@@ -1,0 +1,140 @@
+{
+  "run": "control",
+  "image_size": [
+    192,
+    192
+  ],
+  "batch_size": 16,
+  "base_channels": 32,
+  "workers": 2,
+  "epochs_completed": 20,
+  "total_epoch_seconds": 1284.4280456000015,
+  "best_epoch": 20,
+  "best_validation_miou": 0.7712252433420401,
+  "best_validation_pixel_accuracy": 0.9550732582455306,
+  "final_epoch": 20,
+  "final_validation_miou": 0.7712252433420401,
+  "final_validation_pixel_accuracy": 0.9550732582455306,
+  "per_epoch": [
+    {
+      "epoch": 1,
+      "val_miou": 0.532982875852411,
+      "val_pixel_accuracy": 0.8702171874114697,
+      "seconds": 146.93675149999945
+    },
+    {
+      "epoch": 2,
+      "val_miou": 0.5705299530356803,
+      "val_pixel_accuracy": 0.8676129036300236,
+      "seconds": 108.7389357000011
+    },
+    {
+      "epoch": 3,
+      "val_miou": 0.6068498743101597,
+      "val_pixel_accuracy": 0.9025324700341544,
+      "seconds": 57.85099219999938
+    },
+    {
+      "epoch": 4,
+      "val_miou": 0.6475336217346863,
+      "val_pixel_accuracy": 0.9187200977493509,
+      "seconds": 55.38674659999924
+    },
+    {
+      "epoch": 5,
+      "val_miou": 0.6643451663970206,
+      "val_pixel_accuracy": 0.9363711854726401,
+      "seconds": 55.19141839999975
+    },
+    {
+      "epoch": 6,
+      "val_miou": 0.6777029246888263,
+      "val_pixel_accuracy": 0.9194931776638854,
+      "seconds": 55.842759000001024
+    },
+    {
+      "epoch": 7,
+      "val_miou": 0.7054351830390811,
+      "val_pixel_accuracy": 0.9304689545233519,
+      "seconds": 57.37469659999988
+    },
+    {
+      "epoch": 8,
+      "val_miou": 0.7200245554152145,
+      "val_pixel_accuracy": 0.9404217748101497,
+      "seconds": 58.51198359999944
+    },
+    {
+      "epoch": 9,
+      "val_miou": 0.6999263654511647,
+      "val_pixel_accuracy": 0.9078570221756912,
+      "seconds": 55.38410140000087
+    },
+    {
+      "epoch": 10,
+      "val_miou": 0.7420843066388506,
+      "val_pixel_accuracy": 0.9451118682632065,
+      "seconds": 57.245850999999675
+    },
+    {
+      "epoch": 11,
+      "val_miou": 0.7390846165682957,
+      "val_pixel_accuracy": 0.9438287182636237,
+      "seconds": 57.564509399999224
+    },
+    {
+      "epoch": 12,
+      "val_miou": 0.722861094494042,
+      "val_pixel_accuracy": 0.9378006829791298,
+      "seconds": 57.65600919999997
+    },
+    {
+      "epoch": 13,
+      "val_miou": 0.7525481961521302,
+      "val_pixel_accuracy": 0.947521383498875,
+      "seconds": 57.58826860000045
+    },
+    {
+      "epoch": 14,
+      "val_miou": 0.7605596542588564,
+      "val_pixel_accuracy": 0.9469464909717429,
+      "seconds": 57.66712340000049
+    },
+    {
+      "epoch": 15,
+      "val_miou": 0.7561633410055979,
+      "val_pixel_accuracy": 0.9461977495949426,
+      "seconds": 57.67981770000006
+    },
+    {
+      "epoch": 16,
+      "val_miou": 0.7506864979683165,
+      "val_pixel_accuracy": 0.9426983769297893,
+      "seconds": 57.37341930000002
+    },
+    {
+      "epoch": 17,
+      "val_miou": 0.7512563139251982,
+      "val_pixel_accuracy": 0.940865832635985,
+      "seconds": 57.698876599999494
+    },
+    {
+      "epoch": 18,
+      "val_miou": 0.7666806960311129,
+      "val_pixel_accuracy": 0.9499004755623761,
+      "seconds": 57.696598800001084
+    },
+    {
+      "epoch": 19,
+      "val_miou": 0.7550883695449635,
+      "val_pixel_accuracy": 0.9479111314440986,
+      "seconds": 57.41016800000034
+    },
+    {
+      "epoch": 20,
+      "val_miou": 0.7712252433420401,
+      "val_pixel_accuracy": 0.9550732582455306,
+      "seconds": 57.62901860000056
+    }
+  ]
+}
