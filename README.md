@@ -1,36 +1,54 @@
 # AI4Mars Terrain Segmentation
 
-Train a compact U-Net to segment Mars rover imagery into Soil, Bedrock, Sand, and Big rock.
+A reproducible four-class Mars rover terrain segmentation project. The main experiment compares the same compact U-Net with no augmentation and with paired, label-safe augmentation.
 
-## Local training (Windows, macOS, or Linux)
+## Environment
 
-1. Install Python 3.10 or newer.
-2. In this project folder, sync dependencies with uv. This project pins PyTorch to its CUDA 13.0 wheel index on Windows/Linux so the NVIDIA GPU is available:
-
-   ```powershell
-   uv sync
-   ```
-
-   Then use `uv run` for commands so they use the synced environment. The CUDA PyTorch wheel includes its runtime; keep your NVIDIA driver current.
-3. Start training:
-
-   ```powershell
-   uv run python train.py --epochs 20 --batch-size 8 --workers 2
-   ```
-
-The script downloads/caches `hassanjbara/AI4MARS` through Hugging Face Datasets on first run. It uses CUDA when available, then Apple MPS, otherwise CPU. CPU training can be slow; use `--batch-size 2` or `--image-size 128` if memory is tight. On Windows, `--workers 0` is the reliable default.
-
-Checkpoints and `training_history.json` are written to `outputs/ai4mars/`. `latest.pth` is saved each epoch and `best.pth` tracks the best validation mIoU. Resume an interrupted run with:
+Use Python 3.10 or newer. This project uses `uv`; on Windows/Linux, `pyproject.toml` pins PyTorch to its CUDA 13.0 wheel index so an NVIDIA GPU can be used.
 
 ```powershell
-uv run python train.py --epochs 20 --batch-size 8 --workers 2 --resume
+uv sync
+uv run python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU')"
 ```
 
-`--epochs` is the total target epoch count when resuming. Use `uv run python train.py --help` to see all options.
+Keep the NVIDIA driver current. The project also runs on CPU, though training will be slower.
 
-## Dataset
+## Dataset and split
 
-AI4Mars: https://data.nasa.gov/
-Hugging Face dataset: `hassanjbara/AI4MARS`
+The public dataset is `hassanjbara/AI4MARS`. Hugging Face downloads and caches it on first use. The four source mask IDs map to Soil (0), Bedrock (1), Sand (2), and Big rock (3); void and unknown values map to ignore index 255. The dataset schema has no scene/group identifier, so the train/validation split is record-level and fixed by seed. The exact indices and dataset fingerprint are saved in `outputs/splits/ai4mars_seed0.json` and copied into each run folder.
 
-The dataset is not stored in this repository. The notebook remains available for exploration; `train.py` is the standalone local training path and does not require Google Colab or Drive.
+Training uses the dataset's `train` partition for an 80/20 train/validation split. Official `test_min1`, `test_min2`, and `test_min3` partitions are reserved for the final one-shot evaluation; do not inspect their metrics while tuning.
+
+## Matched experiment
+
+Both runs use the same seed, split, 192×192 image size, U-Net width, optimizer, batch size, worker count, and 20-epoch cap. The lower resolution was chosen to reduce local training time while preserving the full model width; report it as an experimental choice.
+
+Control, without augmentation:
+
+```powershell
+uv run python train.py --epochs 20 --batch-size 16 --workers 2 --image-size 192 --output-dir outputs/ai4mars_192_b16
+```
+
+Augmentation, using the same saved split:
+
+```powershell
+uv run python train.py --epochs 20 --batch-size 16 --workers 2 --image-size 192 --augment --output-dir outputs/ai4mars_192_b16_aug
+```
+
+The augmentation applies the same horizontal flip and small rotation to each image/mask pair, then applies modest brightness/contrast changes to the image only. Validation mIoU selects the best checkpoint; pixel accuracy is supplementary. Review the per-class IoU and confusion matrix as well as mIoU.
+
+## Final test evaluation
+
+After the control/augmentation choice and all settings are frozen, evaluate the selected final checkpoints once:
+
+```powershell
+uv run python evaluate.py --checkpoints outputs/ai4mars_192_b16/best.pth outputs/ai4mars_192_b16_aug/best.pth --output results/final_test_metrics.json
+```
+
+The evaluator refuses to overwrite an existing report to help avoid repeated test-set use. It reports per-class IoU, mIoU, pixel accuracy, valid pixel count, and confusion matrix. Do not use test results to revise the model; if they change a design decision, treat that limitation honestly.
+
+## Outputs and resume
+
+Each run saves `best.pth`, `latest.pth`, `training_history.json`, `run_config.json`, and its split manifest under `outputs/`. Those local training artifacts are git-ignored. Keep concise result summaries and report figures under `results/` for version control. Resume a run with `--resume`; `--epochs` remains the total target epoch count.
+
+The notebook files contain exploratory analysis and the majority-class baseline. The standalone `train.py` and `evaluate.py` paths are the reproducible local training/evaluation workflow.
