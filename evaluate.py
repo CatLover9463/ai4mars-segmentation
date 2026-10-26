@@ -22,6 +22,7 @@ from train import (
     MarsDataset,
     UNet,
     decode_image,
+    metrics_from_confusion,
     run_epoch,
 )
 
@@ -80,6 +81,34 @@ def main():
     results = {}
     criterion = nn.CrossEntropyLoss(ignore_index=IGNORE_INDEX)
 
+    # Include the same training-derived majority predictor in the final report.
+    # This keeps the test comparison like-for-like without using test labels to
+    # choose the majority class.
+    baseline_path = Path("results/majority_baseline_192.json")
+    baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
+    majority_id = int(baseline["majority_class_id"])
+    baseline_dataset = MarsDataset(test_data, usable, tuple(baseline["image_size"]))
+    baseline_loader = DataLoader(
+        baseline_dataset,
+        batch_size=args.batch_size,
+        shuffle=False,
+        num_workers=args.workers,
+        pin_memory=device.type == "cuda",
+        persistent_workers=args.workers > 0,
+    )
+    target_counts = torch.zeros(NUM_CLASSES, dtype=torch.long)
+    for _, masks in baseline_loader:
+        valid = (masks >= 0) & (masks < NUM_CLASSES) & (masks != IGNORE_INDEX)
+        if valid.any():
+            target_counts += torch.bincount(masks[valid], minlength=NUM_CLASSES)
+    baseline_cm = torch.zeros(NUM_CLASSES, NUM_CLASSES, dtype=torch.long)
+    baseline_cm[:, majority_id] = target_counts
+    results["majority_baseline"] = {
+        "majority_class": CLASS_NAMES[majority_id],
+        "majority_class_id": majority_id,
+        **metrics_from_confusion(baseline_cm),
+    }
+
     for checkpoint_path in args.checkpoints:
         checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
         config = checkpoint.get("config", {})
@@ -100,6 +129,7 @@ def main():
         )
         test_loss, metrics = run_epoch(model, loader, device, criterion)
         results[checkpoint_path.parent.name] = {
+            "run": "augmentation" if config.get("augmentation", "none") != "none" else "control",
             "checkpoint": str(checkpoint_path),
             "best_epoch": checkpoint.get("epoch", checkpoint.get("best_epoch")),
             "validation_miou": checkpoint.get("best_val_miou"),

@@ -15,7 +15,7 @@ Keep the NVIDIA driver current. The project also runs on CPU, though training wi
 
 ## Dataset and split
 
-The public dataset is `hassanjbara/AI4MARS`. Hugging Face downloads and caches it on first use. The four source mask IDs map to Soil (0), Bedrock (1), Sand (2), and Big rock (3); void and unknown values map to ignore index 255. The dataset schema has no scene/group identifier, so the train/validation split is record-level and fixed by seed. The exact indices and dataset fingerprint are saved in `outputs/splits/ai4mars_seed0.json` and copied into each run folder.
+The public dataset is `hassanjbara/AI4MARS`. Hugging Face downloads and caches it on first use. The four source mask IDs map to Soil (0), Bedrock (1), Sand (2), and Big rock (3); void and unknown values map to ignore index 255. The dataset schema has no scene/group identifier, so the train/validation split is record-level and fixed by seed. The exact indices and dataset fingerprint are versioned in `outputs/splits/ai4mars_seed0.json` and copied into each run folder.
 
 Training uses the dataset's `train` partition for an 80/20 train/validation split. The official `test_min1`, `test_min2`, and `test_min3` variants contain the same test images with different levels of annotation agreement, so the final one-shot evaluation uses only `test_min3` (the strictest agreement version). Do not inspect any test metrics while tuning. See the [dataset card](https://huggingface.co/datasets/hassanjbara/AI4MARS) for the variant definitions.
 
@@ -47,13 +47,13 @@ The augmentation applies the same horizontal flip and small rotation to each ima
 
 ## Final test evaluation
 
-After the control/augmentation choice and all settings are frozen, evaluate the selected final checkpoints once:
+After choosing control or augmentation by validation mIoU and freezing all settings, evaluate that selected checkpoint once. The report also evaluates the training-derived majority baseline on the same test split:
 
 ```powershell
-uv run python evaluate.py --checkpoints outputs/ai4mars_192_b16/best.pth outputs/ai4mars_192_b16_aug/best.pth --output results/final_test_metrics.json
+uv run python evaluate.py --checkpoints models/ai4mars_best.pth --output results/final_test_metrics.json
 ```
 
-The evaluator refuses to overwrite an existing report to help avoid repeated test-set use. It reports per-class IoU, mIoU, pixel accuracy, valid pixel count, and confusion matrix. Do not use test results to revise the model; if they change a design decision, treat that limitation honestly.
+The evaluator uses only `test_min3` and refuses to overwrite an existing report to help avoid repeated test-set use. It reports per-class IoU, mIoU, pixel accuracy, valid pixel count, and confusion matrix for the selected model and majority baseline. Do not use test results to revise the model; if they change a design decision, treat that limitation honestly.
 
 ## Outputs and resume
 

@@ -15,10 +15,12 @@ datasets/
 
 # Model checkpoints and training outputs
 checkpoints/
-outputs/
+outputs/*
+!outputs/splits/
+outputs/splits/*
+!outputs/splits/ai4mars_seed0.json
 *.pth
 *.pt
 *.ckpt
 runs/
 logs/
-outputs/
