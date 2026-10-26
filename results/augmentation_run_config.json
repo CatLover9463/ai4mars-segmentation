@@ -1,0 +1,31 @@
+{
+  "dataset_id": "hassanjbara/AI4MARS",
+  "split_file": "outputs/splits/ai4mars_seed0.json",
+  "seed": 0,
+  "image_size": [
+    192,
+    192
+  ],
+  "num_classes": 4,
+  "class_names": [
+    "Soil",
+    "Bedrock",
+    "Sand",
+    "Big rock"
+  ],
+  "label_id_mapping": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3
+  },
+  "ignore_index": 255,
+  "batch_size": 16,
+  "workers": 2,
+  "base_channels": 32,
+  "learning_rate": 0.001,
+  "epochs": 20,
+  "augmentation": "paired_flip_rotate8_brightness_contrast",
+  "device": "cuda",
+  "dataset_fingerprint": "fd1dde01b27b0644"
+}

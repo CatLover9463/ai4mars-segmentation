@@ -20,6 +20,7 @@ outputs/*
 outputs/splits/*
 !outputs/splits/ai4mars_seed0.json
 *.pth
+!models/ai4mars_best.pth
 *.pt
 *.ckpt
 runs/

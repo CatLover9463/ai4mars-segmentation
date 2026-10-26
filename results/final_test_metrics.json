@@ -1,0 +1,141 @@
+{
+  "dataset_id": "hassanjbara/AI4MARS",
+  "test_split": "test_min3",
+  "test_partition_record_count": 322,
+  "usable_test_record_count": 322,
+  "excluded_test_record_counts": {
+    "missing_image": 0,
+    "missing_mask": 0
+  },
+  "class_names": [
+    "Soil",
+    "Bedrock",
+    "Sand",
+    "Big rock"
+  ],
+  "label_id_mapping": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3
+  },
+  "ignore_index": 255,
+  "device": "cuda",
+  "results": {
+    "majority_baseline": {
+      "majority_class": "Bedrock",
+      "majority_class_id": 1,
+      "pixel_accuracy": 0.22395108840506683,
+      "miou": 0.05598777210126671,
+      "per_class_iou": [
+        0.0,
+        0.22395108840506683,
+        0.0,
+        0.0
+      ],
+      "valid_pixels": 4112072,
+      "confusion_matrix": [
+        [
+          0,
+          2111986,
+          0,
+          0
+        ],
+        [
+          0,
+          920903,
+          0,
+          0
+        ],
+        [
+          0,
+          1076473,
+          0,
+          0
+        ],
+        [
+          0,
+          2710,
+          0,
+          0
+        ]
+      ]
+    },
+    "control": {
+      "checkpoint": "models\\ai4mars_best.pth",
+      "best_epoch": 20,
+      "validation_miou": 0.7712252433420401,
+      "test_loss": 0.09094209028851419,
+      "qualitative_figure": "results\\test_prediction_overlays.png",
+      "qualitative_examples": [
+        {
+          "test_index": 72,
+          "mean_iou_present_classes": 0.28423870086944025
+        },
+        {
+          "test_index": 184,
+          "mean_iou_present_classes": 1.0
+        },
+        {
+          "test_index": 197,
+          "mean_iou_present_classes": 1.0
+        },
+        {
+          "test_index": 216,
+          "mean_iou_present_classes": 0.49477789529349553
+        },
+        {
+          "test_index": 248,
+          "mean_iou_present_classes": null
+        },
+        {
+          "test_index": 267,
+          "mean_iou_present_classes": 1.0
+        },
+        {
+          "test_index": 285,
+          "mean_iou_present_classes": 1.0
+        },
+        {
+          "test_index": 297,
+          "mean_iou_present_classes": 0.48828162520411106
+        }
+      ],
+      "pixel_accuracy": 0.97035241600828,
+      "miou": 0.8153423250635963,
+      "per_class_iou": [
+        0.9717340869667344,
+        0.9008716914013913,
+        0.9248662139882382,
+        0.463897307898021
+      ],
+      "valid_pixels": 4112072,
+      "confusion_matrix": [
+        [
+          2085044,
+          8327,
+          18537,
+          78
+        ],
+        [
+          28941,
+          889409,
+          396,
+          2157
+        ],
+        [
+          4659,
+          58046,
+          1013104,
+          664
+        ],
+        [
+          108,
+          0,
+          0,
+          2602
+        ]
+      ]
+    }
+  }
+}

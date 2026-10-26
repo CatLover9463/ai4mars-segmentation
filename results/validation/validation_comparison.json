@@ -1,0 +1,126 @@
+{
+  "dataset_id": "hassanjbara/AI4MARS",
+  "split_file": "outputs\\splits\\ai4mars_seed0.json",
+  "split_fingerprint": "fd1dde01b27b0644",
+  "validation_record_count": 3181,
+  "class_names": [
+    "Soil",
+    "Bedrock",
+    "Sand",
+    "Big rock"
+  ],
+  "label_id_mapping": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3
+  },
+  "ignore_index": 255,
+  "results": {
+    "control": {
+      "checkpoint": "outputs\\ai4mars_192_b16\\best.pth",
+      "best_epoch": 20,
+      "checkpoint_best_validation_miou": 0.7712252433420401,
+      "validation_loss": 0.13011812820244376,
+      "pixel_accuracy": 0.9550727762942883,
+      "miou": 0.771222257770718,
+      "per_class_iou": [
+        0.9250391583536912,
+        0.9305327601094292,
+        0.853594079247816,
+        0.37572303337193547
+      ],
+      "valid_pixels": 66396758,
+      "confusion_matrix": [
+        [
+          24576815,
+          373072,
+          166893,
+          9291
+        ],
+        [
+          1008442,
+          31555195,
+          162891,
+          44187
+        ],
+        [
+          403413,
+          455923,
+          7033529,
+          6058
+        ],
+        [
+          30479,
+          311181,
+          11192,
+          248197
+        ]
+      ]
+    },
+    "augmentation": {
+      "checkpoint": "outputs\\ai4mars_192_b16_aug\\best.pth",
+      "best_epoch": 19,
+      "checkpoint_best_validation_miou": 0.7606143616251396,
+      "validation_loss": 0.15578497513829165,
+      "pixel_accuracy": 0.9444034300590399,
+      "miou": 0.7606121508567235,
+      "per_class_iou": [
+        0.9019523784680398,
+        0.914046318733721,
+        0.8453866957441295,
+        0.38106321048100406
+      ],
+      "valid_pixels": 66396758,
+      "confusion_matrix": [
+        [
+          24601295,
+          277641,
+          237877,
+          9258
+        ],
+        [
+          1631929,
+          30715756,
+          192997,
+          230033
+        ],
+        [
+          466142,
+          356438,
+          7062948,
+          13395
+        ],
+        [
+          51461,
+          199363,
+          24898,
+          325327
+        ]
+      ]
+    }
+  },
+  "qualitative_figure": "results\\validation\\validation_overlays.png",
+  "qualitative_validation_indices": [
+    5543,
+    17748,
+    18039,
+    14356,
+    9017,
+    11066,
+    13907,
+    6315
+  ],
+  "demo_examples": {
+    "success": {
+      "validation_index": 17748,
+      "sample_mean_iou": 1.0,
+      "selected_model": "control"
+    },
+    "failure": {
+      "validation_index": 18039,
+      "sample_mean_iou": 0.3385825489127674,
+      "selected_model": "control"
+    }
+  }
+}

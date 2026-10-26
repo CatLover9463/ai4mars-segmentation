@@ -115,7 +115,7 @@ def main():
     selected = np.random.default_rng(0).choice(val_indices, size=min(args.examples, len(val_indices)), replace=False)
     sample_dataset = MarsDataset(data, selected.tolist(), (192, 192))
     columns = ["Input", "Reference", "Control", "Augmentation"]
-    fig, axes = plt.subplots(len(selected), len(columns), figsize=(12, 2.55 * len(selected)), squeeze=False)
+    fig, axes = plt.subplots(len(selected), len(columns), figsize=(12, 1.42 * len(selected)), squeeze=False)
     for row, (index, (image_tensor, mask_tensor)) in enumerate(zip(selected, sample_dataset)):
         image = (image_tensor.squeeze(0).numpy() * 255).astype(np.uint8)
         truth = mask_tensor.numpy().astype(np.uint8)
@@ -136,6 +136,39 @@ def main():
     fig.savefig(figure_path, dpi=180, bbox_inches="tight")
     plt.close(fig)
 
+    selected_model = max(results, key=lambda name: results[name]["miou"])
+    example_scores = []
+    demo_dir = args.output_dir / "demo_examples"
+    demo_dir.mkdir(parents=True, exist_ok=True)
+    for row, (index, (image_tensor, mask_tensor)) in enumerate(zip(selected, sample_dataset)):
+        truth = mask_tensor.numpy().astype(np.uint8)
+        prediction = predictions[selected_model][row]
+        valid = truth != IGNORE_INDEX
+        class_ious = []
+        for class_id in range(NUM_CLASSES):
+            target_class = (truth == class_id) & valid
+            predicted_class = (prediction == class_id) & valid
+            union = np.logical_or(target_class, predicted_class).sum()
+            if union:
+                class_ious.append(np.logical_and(target_class, predicted_class).sum() / union)
+        example_scores.append(float(np.mean(class_ious)) if class_ious else float("nan"))
+
+    best_row = int(np.nanargmax(example_scores))
+    worst_row = int(np.nanargmin(example_scores))
+    chosen_examples = {"success": best_row, "failure": worst_row}
+    demo_indices = {}
+    for label, row in chosen_examples.items():
+        image_tensor, mask_tensor = sample_dataset[row]
+        image = (image_tensor.squeeze(0).numpy() * 255).round().clip(0, 255).astype(np.uint8)
+        mask = mask_tensor.numpy().astype(np.uint8)
+        Image.fromarray(image, mode="L").save(demo_dir / f"{label}_input.png")
+        Image.fromarray(mask, mode="L").save(demo_dir / f"{label}_mask.png")
+        demo_indices[label] = {
+            "validation_index": int(selected[row]),
+            "sample_mean_iou": example_scores[row],
+            "selected_model": selected_model,
+        }
+
     report = {
         "dataset_id": args.dataset_id,
         "split_file": str(args.split_file),
@@ -147,6 +180,7 @@ def main():
         "results": results,
         "qualitative_figure": str(figure_path),
         "qualitative_validation_indices": [int(i) for i in selected],
+        "demo_examples": demo_indices,
     }
     report_path = args.output_dir / "validation_comparison.json"
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")

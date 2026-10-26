@@ -1,0 +1,29 @@
+{
+  "selected_run": "control",
+  "selection_metric": "validation mIoU; test data not used for selection",
+  "validation_comparison": {
+    "control": {
+      "best_epoch": 20,
+      "miou": 0.771222257770718,
+      "pixel_accuracy": 0.9550727762942883,
+      "per_class_iou": [
+        0.9250391583536912,
+        0.9305327601094292,
+        0.853594079247816,
+        0.37572303337193547
+      ]
+    },
+    "augmentation": {
+      "best_epoch": 19,
+      "miou": 0.7606121508567235,
+      "pixel_accuracy": 0.9444034300590399,
+      "per_class_iou": [
+        0.9019523784680398,
+        0.914046318733721,
+        0.8453866957441295,
+        0.38106321048100406
+      ]
+    }
+  },
+  "decision": "Control selected because it has the higher validation mIoU. Augmentation has a small Big Rock IoU gain but lower overall mIoU and higher epoch time."
+}

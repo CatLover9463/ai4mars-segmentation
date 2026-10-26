@@ -1,0 +1,14 @@
+{
+  "dataset_id": "hassanjbara/AI4MARS",
+  "epochs": 20,
+  "batch_size": 16,
+  "workers": 2,
+  "image_size": 192,
+  "base_channels": 32,
+  "learning_rate": 0.001,
+  "seed": 0,
+  "device": "cuda",
+  "augmentation": "none",
+  "dataset_fingerprint": "fd1dde01b27b0644",
+  "split_file": "outputs/splits/ai4mars_seed0.json"
+}
