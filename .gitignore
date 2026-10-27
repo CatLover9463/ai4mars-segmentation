@@ -25,3 +25,7 @@ outputs/splits/*
 *.ckpt
 runs/
 logs/
+
+# Locally generated reports
+output/pdf/
+output/docx/

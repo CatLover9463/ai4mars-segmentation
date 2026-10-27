@@ -2,7 +2,7 @@
 
 A reproducible four-class Mars rover terrain segmentation project. The main experiment compares the same compact U-Net with no augmentation and with paired, label-safe augmentation.
 
-[Open the validation inference demo in Google Colab](https://colab.research.google.com/github/CatLover9463/ai4mars-segmentation/blob/main/ai4mars_demo.ipynb).
+[Try the quick AI4MARS model demo in Google Colab](https://colab.research.google.com/github/CatLover9463/ai4mars-segmentation/blob/main/ai4mars_walkthrough.ipynb).
 
 ## Environment
 
@@ -59,13 +59,22 @@ For one local rover image, use the selected checkpoint saved at `models/ai4mars_
 uv run python predict.py path\to\rover_image.jpg
 ```
 
-## Validation result
+## Results
 
-The matched 20-epoch runs selected the no-augmentation control: validation mIoU 0.7712 at epoch 20, compared with 0.7606 at epoch 19 for augmentation. The control used 21.4 minutes of logged epoch time; augmentation used 30.5 minutes. Augmentation raised Big Rock IoU slightly (0.3811 vs. 0.3757), while the control was higher on the other three classes and had higher overall mIoU. The fixed validation comparison and per-class metrics are in `results/validation/validation_comparison.json`; `results/model_selection.json` records the decision.
+We selected the no-augmentation control using validation mIoU, then evaluated it once on the strict `test_min3` split. The test set contains 322 records and 4,112,072 valid labeled pixels.
 
-The single final test_min3 evaluation covered 322 records and 4,112,072 valid non-void pixels. The selected control scored mIoU 0.8153, pixel accuracy 0.9704, and Big Rock IoU 0.4639. The training-derived majority baseline scored mIoU 0.0560 and pixel accuracy 0.2240 on those same valid pixels. One strict-annotation record had no valid pixels and therefore contributed nothing to pixel metrics. Full class metrics and the confusion matrix are in `results/final_test_metrics.json`; eight overlays are in `results/test_prediction_overlays.png`.
+| Model | Test mIoU | Pixel accuracy | Big Rock IoU |
+| --- | ---: | ---: | ---: |
+| U-Net (selected control) | **0.8153** | **0.9704** | **0.4639** |
+| Majority-class baseline | 0.0560 | 0.2240 | 0.0000 |
 
-The seven-page report is `output/pdf/ai4mars_project_report.pdf`.
+Validation mIoU was 0.7712 for the control and 0.7606 for augmentation, so the control was selected before looking at test results. The test metrics are reported for the selected model and the training-derived baseline; test results were not used to choose between runs.
+
+<p align="center">
+  <img src="results/test_prediction_overlays.png" alt="Eight AI4MARS test examples showing the input image, reference labels, and model prediction" width="800">
+</p>
+
+The overlay shows eight test examples side by side with their reference labels and predictions. Full per-class metrics and the confusion matrix are available in `results/final_test_metrics.json`.
 
 ## Final test evaluation
 
@@ -79,9 +88,9 @@ The evaluator uses only `test_min3`, accepts exactly one validation-selected che
 
 ## Outputs and resume
 
-Each run saves `best.pth`, `latest.pth`, `training_history.json`, `run_config.json`, and its split manifest under `outputs/`. Those local training artifacts are git-ignored. Keep concise result summaries and report figures under `results/` for version control. Resume a run with `--resume`; `--epochs` remains the total target epoch count.
+Each run saves `best.pth`, `latest.pth`, `training_history.json`, `run_config.json`, and its split manifest under `outputs/`. Those local training artifacts are git-ignored. Keep concise result summaries and visualizations under `results/` for version control. Resume a run with `--resume`; `--epochs` remains the total target epoch count.
 
-The notebooks provide exploratory analysis, the majority-class baseline, and a runnable Colab inference walkthrough. The standalone `train.py` and `evaluate.py` paths are the reproducible local training/evaluation workflow.
+The `ai4mars_walkthrough.ipynb` notebook is a quick Colab demo: it loads a capped sample of the training data, trains a smaller U-Net for a few epochs, and displays predictions on its held-out validation split. It does not reproduce the full matched experiment or final test evaluation; use the standalone scripts above for those results.
 
 ## References
 
