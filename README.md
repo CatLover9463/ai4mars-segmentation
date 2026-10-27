@@ -23,7 +23,7 @@ Training uses the dataset's `train` partition for an 80/20 train/validation spli
 
 ## Matched experiment
 
-Both runs use the same seed, split, 192×192 image size, U-Net width, optimizer, batch size, worker count, and 20-epoch cap. The lower resolution was chosen to reduce local training time while preserving the full model width; report it as an experimental choice.
+Both runs use the same fixed seed (0) and saved split, 192×192 images, a U-Net with 32 base channels, Adam with a 0.001 learning rate, batch size 16, 2 data-loader workers, and a 20-epoch cap. The lower resolution was chosen to reduce local training time while preserving the full model width; report it as an experimental choice.
 
 Compute the majority-class baseline first. This also creates the shared split manifest used by both model runs:
 
@@ -36,13 +36,13 @@ The baseline summary is saved to `results/majority_baseline_192.json`.
 Control, without augmentation:
 
 ```powershell
-uv run python train.py --epochs 20 --batch-size 16 --workers 2 --image-size 192 --output-dir outputs/ai4mars_192_b16
+uv run python train.py --epochs 20 --batch-size 16 --workers 2 --image-size 192 --base-channels 32 --learning-rate 0.001 --seed 0 --output-dir outputs/ai4mars_192_b16
 ```
 
 Augmentation, using the same saved split:
 
 ```powershell
-uv run python train.py --epochs 20 --batch-size 16 --workers 2 --image-size 192 --augment --output-dir outputs/ai4mars_192_b16_aug
+uv run python train.py --epochs 20 --batch-size 16 --workers 2 --image-size 192 --base-channels 32 --learning-rate 0.001 --seed 0 --augment --output-dir outputs/ai4mars_192_b16_aug
 ```
 
 The augmentation applies the same horizontal flip and small rotation to each image/mask pair, then applies modest brightness/contrast changes to the image only. Validation mIoU selects the best checkpoint; pixel accuracy is supplementary. Review the per-class IoU and confusion matrix as well as mIoU.
